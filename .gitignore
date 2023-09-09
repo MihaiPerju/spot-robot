@@ -1,0 +1,11 @@
+**/wandb
+**/__pycache__
+env
+robot/videos/*
+
+**/actor_[0-9]*.h5
+**/target_actor_[0-9]*.h5
+**/target_critic_[0-9]*.h5
+
+spot/**
+resources/**
