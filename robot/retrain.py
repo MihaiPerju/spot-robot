@@ -13,30 +13,25 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  # ("20230912130440", "kff1rcrj"),
-  # ("20230912203508", "gqv2adq0"),
-  # ("20230912213940", "64vgfhp1"),
-  # ("20230912222913", "wdoinbmu"),
-  ("20230913114440", "zltnopc2"),
-  ("20230913124536", "mn74a9y9"),
-  ("20230913154756", "lfxu59ns")
+  ("20230913220037", "paeu3j1c"),
+  ("20230914033322", "b1nwaay1")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-forward-rewarded-only-2"
+  project_name = "spot-forward-rewarded-only-3"
   sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
-  run.config['n_episodes']=3000
+  run.config['n_episodes']=1000
   run.config['steps_per_episode']=100000
   
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project="spot-forward-rewarded-only-3", 
+    project="spot-natural-motion", 
     config=run.config, 
     reinit=True
 

@@ -30,8 +30,8 @@ class DDPG():
     self.target_actor = self.build_actor_network(state_shape, action_shape, num_layers, layer_size )
     self.target_critic = self.build_critic_network(state_shape, action_shape, num_layers, layer_size )
 
-    self.actor_optimizer = tf.keras.optimizers.legacy.Adam()
-    self.critic_optimizer = tf.keras.optimizers.legacy.Adam()
+    self.actor_optimizer = tf.keras.optimizers.Adam()
+    self.critic_optimizer = tf.keras.optimizers.Adam()
 
     # setting the weights for target networks
     self.target_actor.set_weights(self.actor.get_weights())
