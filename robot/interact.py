@@ -10,13 +10,13 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230913220037", "paeu3j1c"),
+  ("20230918203117", "snx86g3n"),
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-forward-rewarded-only-3"
+  project_name = "spot-natural-motion"
   sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
@@ -26,7 +26,7 @@ for model in models:
   
   wandb.init(
     name="visualisation",
-    project="spot-forward-rewarded-only", 
+    project="todelete", 
     config=run.config, 
     )
   config = wandb.config

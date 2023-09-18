@@ -64,6 +64,22 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
       
       return np.concatenate(observation)
 
+    def get_y_axis_rotation(self):
+
+      def quaternion_to_rotation_matrix(q):
+          w, x, y, z = q
+          return np.array([[1 - 2*y*y - 2*z*z, 2*x*y - 2*w*z, 2*x*z + 2*w*y],
+                          [2*x*y + 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z - 2*w*x],
+                          [2*x*z - 2*w*y, 2*y*z + 2*w*x, 1 - 2*x*x - 2*y*y]])
+
+      quaternion = self.data.body("trunk").xquat
+      rotation_matrix = quaternion_to_rotation_matrix(quaternion)
+
+      # Extract the local y-axis (forward vector) from the rotation matrix
+      local_y_axis = rotation_matrix[:, 1]
+      return local_y_axis[1]
+
+
     def step(self, raw_action):
         wandb.log({"Step": self.n_steps})
 
@@ -86,10 +102,21 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
         wandb.log({"Reached distance": reached_distance})
 
         z_axis_rotation=self.get_z_axis_rotation()
+        trunk_height = self.data.body("trunk").xpos[2]
+        trunk_orientation = self.get_y_axis_rotation()-0.69
+
+        trunk_orientation_reward = -abs(trunk_orientation)
+        trunk_height_reward = (trunk_height-0.2)*2
+
+        # wandb.log({"Trunk Height": trunk_height})
+        # wandb.log({"Trunk Height Reward": trunk_height_reward})
+        # wandb.log({"Trunk Orientation": trunk_orientation})
+        # wandb.log({"Trunk Orientation Reward": trunk_orientation_reward})
+        # wandb.log({"Time": self.data.time})
 
         # the default reward is based on how far it got compared to destination
         # the closer to the destination - the more the reward will increase
-        reward = reached_distance
+        reward = reached_distance+trunk_orientation_reward+trunk_height_reward
 
         if reached_distance>self.max_distance:
           self.max_distance=reached_distance
@@ -106,7 +133,7 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
 
         # if the robot reached the destination - it won
         elif reached_distance>self.goal_distance:
-            reward*=10
+            reward*=5
             done=True
 
         info={}
