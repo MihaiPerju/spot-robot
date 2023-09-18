@@ -2,10 +2,13 @@
 **/__pycache__
 env
 robot/videos/*
+robot/.DS_Store
+robot/MUJOCO_LOG.TXT
 
 **/actor_[0-9]*.h5
 **/target_actor_[0-9]*.h5
 **/target_critic_[0-9]*.h5
 
 spot/**
+records/**
 resources/**
