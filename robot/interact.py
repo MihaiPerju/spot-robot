@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_no_falls_v2 import SpotEnvironmentNoFalls
+from environment_foot_contact import SpotEnvironmentNoFalls
 
 wandb.login()
 
@@ -10,16 +10,15 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230909223542", "z591k1h3"),
+  ("20230913220037", "paeu3j1c"),
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-no-falls"
+  project_name = "spot-forward-rewarded-only-3"
   sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
-
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
   run.config['n_episodes']=1000000
@@ -27,7 +26,7 @@ for model in models:
   
   wandb.init(
     name="visualisation",
-    project="spot-no-falls", 
+    project="spot-forward-rewarded-only", 
     config=run.config, 
     )
   config = wandb.config
@@ -49,12 +48,12 @@ for model in models:
   agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
 
   max_distance = 0
-  while max_distance<4:
-    agent.interact()
-    reached_distance = spot_env.data.body("trunk").xpos[0]
-    max_distance =  spot_env.max_distance
+  # while max_distance<4:
+  agent.interact()
+  reached_distance = spot_env.data.body("trunk").xpos[0]
+  max_distance =  spot_env.max_distance
 
-    print("Reached distance: ", reached_distance)
-    print("Max distance: ", max_distance)
+  print("Reached distance: ", reached_distance)
+  print("Max distance: ", max_distance)
 
 
