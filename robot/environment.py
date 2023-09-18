@@ -44,7 +44,8 @@ class Recorder():
     h, w, layers = self.frames[0].shape
     size = (w, h)
 
-    output_path = f"videos/{int(time.time())}.avi"
+    timestamp = int(time.time())
+    output_path = f"videos/{timestamp}.avi"
 
     out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'DIVX'), self.framerate, size)
 
@@ -54,6 +55,7 @@ class Recorder():
       out.write(rgb_frame)
 
     out.release()
+    wandb.log({"Timestamp": timestamp})
 
   def reset(self):
     self.frames=[]
@@ -66,6 +68,7 @@ class SpotEnvironment(gym.Env):
         self.should_render=should_render
         self.goal_distance=goal_distance
         self.max_distance=-1
+        self.last_distance=-1
 
         self.n_steps=0
         self.steps_per_episode=steps_per_episode
@@ -156,7 +159,8 @@ class SpotEnvironment(gym.Env):
 
     def rescale_action(self, raw_action):
       low_bound = np.array([0, -0.686, -2.818]*4)
-      high_bound = np.array([0, 4.501, -0.888]*4)
+      # high_bound = np.array([0, 4.501, -0.888]*4)
+      high_bound = np.array([0, 2, -0.888]*4) # new range of motion to prevent unnatural movement
 
       action_range = high_bound - low_bound
       rescaled_action = low_bound + ((raw_action + 1.0) * 0.5) * action_range
@@ -215,7 +219,7 @@ class SpotEnvironment(gym.Env):
 
         info={}
         observation = self.get_observation()
-        wandb.log({ "Done": done==True })
+        wandb.log({ "Done": 1 if done==True else 0 })
 
         return observation, reward, done, info
 

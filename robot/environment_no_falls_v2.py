@@ -39,6 +39,7 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
             reward=-0.1
 
         if z_axis_rotation<0:
+            wandb.log({ "Fall time":  self.data.time})
             reward=-1
             done=True
             self.n_steps=0
@@ -47,11 +48,12 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
         elif reached_distance>self.goal_distance:
             reward*=10
             done=True
+        
 
 
         info={}
         observation = self.get_observation()
-        wandb.log({ "Done": done==True })
+        wandb.log({ "Done": 0 if done==True else 1 })
 
         return observation, reward, done, info
 

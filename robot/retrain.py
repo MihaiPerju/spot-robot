@@ -3,7 +3,9 @@ import wandb
 from ddpg import DDPG
 from agent import Agent
 # from environment_no_falls import SpotEnvironmentNoFalls
-from environment_no_falls_v2 import SpotEnvironmentNoFalls
+# from environment_no_falls_v2 import SpotEnvironmentNoFalls
+# from environment_no_falls_v3 import SpotEnvironmentNoFalls
+from environment_foot_contact import SpotEnvironmentNoFalls
 
 wandb.login()
 
@@ -11,24 +13,30 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230909185842", "scg4ycc6"),
+  # ("20230912130440", "kff1rcrj"),
+  # ("20230912203508", "gqv2adq0"),
+  # ("20230912213940", "64vgfhp1"),
+  # ("20230912222913", "wdoinbmu"),
+  ("20230913114440", "zltnopc2"),
+  ("20230913124536", "mn74a9y9"),
+  ("20230913154756", "lfxu59ns")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-no-falls"
+  project_name = "spot-forward-rewarded-only-2"
   sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
-  run.config['n_episodes']=1000000
+  run.config['n_episodes']=3000
   run.config['steps_per_episode']=100000
   
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project="spot-no-falls", 
+    project="spot-forward-rewarded-only-3", 
     config=run.config, 
     reinit=True
 
