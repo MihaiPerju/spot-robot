@@ -99,24 +99,25 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
             self.n_steps=0
 
         reached_distance = self.data.body("trunk").xpos[0]
-        wandb.log({"Reached distance": reached_distance})
+        reached_distance_to_goal_ratio = reached_distance/self.goal_distance
 
         z_axis_rotation=self.get_z_axis_rotation()
         trunk_height = self.data.body("trunk").xpos[2]
         trunk_orientation = self.get_y_axis_rotation()-0.69
 
-        trunk_orientation_reward = -abs(trunk_orientation)
-        trunk_height_reward = (trunk_height-0.2)*2
+        trunk_orientation_reward = -abs(trunk_orientation)*reached_distance_to_goal_ratio
+        trunk_height_reward = (trunk_height-0.1)*reached_distance_to_goal_ratio
 
-        # wandb.log({"Trunk Height": trunk_height})
-        # wandb.log({"Trunk Height Reward": trunk_height_reward})
-        # wandb.log({"Trunk Orientation": trunk_orientation})
-        # wandb.log({"Trunk Orientation Reward": trunk_orientation_reward})
-        # wandb.log({"Time": self.data.time})
+        wandb.log({"Trunk Height": trunk_height})
+        wandb.log({"Trunk Height Reward": trunk_height_reward})
+        wandb.log({"Trunk Orientation": trunk_orientation})
+        wandb.log({"Trunk Orientation Reward": trunk_orientation_reward})
+        wandb.log({"Reached distance": reached_distance})
+        wandb.log({"Time": self.data.time})
 
         # the default reward is based on how far it got compared to destination
         # the closer to the destination - the more the reward will increase
-        reward = reached_distance+trunk_orientation_reward+trunk_height_reward
+        reward = reached_distance
 
         if reached_distance>self.max_distance:
           self.max_distance=reached_distance

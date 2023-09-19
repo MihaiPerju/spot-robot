@@ -13,28 +13,26 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230913220037", "paeu3j1c"),
-  ("20230914033322", "b1nwaay1")
+  # ("20230918203117", "snx86g3n"),
+  ("20230918211810", "tngmr26c")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-forward-rewarded-only-3"
+  project_name = "spot-natural-motion"
   sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
-
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
-  run.config['n_episodes']=1000
+  run.config['n_episodes']=10000
   run.config['steps_per_episode']=100000
   
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project="spot-natural-motion", 
+    project="spot-natural-orientation-height", 
     config=run.config, 
     reinit=True
-
     )
   config = wandb.config
 
@@ -59,6 +57,3 @@ for model in models:
 
   agent.train()
   policy.save_weights()
-
-
-# PID 90272

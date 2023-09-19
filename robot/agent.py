@@ -107,6 +107,9 @@ class Agent():
 
         obs=next_obs
 
+      if episode%100==0:
+        tf.keras.backend.clear_session()
+ 
   def interact(self):
       self.log(f"Interacting with the environment")
 
