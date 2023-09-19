@@ -13,7 +13,7 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  # ("20230918203117", "snx86g3n"),
+  ("20230918203117", "snx86g3n"),
   ("20230918211810", "tngmr26c")
 ]
 
@@ -25,12 +25,12 @@ for model in models:
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
-  run.config['n_episodes']=10000
+  run.config['n_episodes']=5000
   run.config['steps_per_episode']=100000
   
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project="spot-natural-orientation-height", 
+    project="spot-natural-motion-2", 
     config=run.config, 
     reinit=True
     )
