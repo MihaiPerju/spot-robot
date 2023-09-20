@@ -2,13 +2,13 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_no_falls_v3 import SpotEnvironmentNoFalls
+from environment_progress import SpotEnvironmentProgress
 
 wandb.login()
 
-for num_layers in [5,6,7,8,9]:
-  for layer_size in [70,80,90,100,]:
-    sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
+for num_layers in [1,2,3,4,5,6,7]:
+  for layer_size in [50,55,65,70]:
+    sample_env = SpotEnvironmentProgress(steps_per_episode=300, goal_distance=100)
     observation_sample = sample_env.get_observation()
 
     config=dict(
@@ -27,10 +27,10 @@ for num_layers in [5,6,7,8,9]:
         layer_size=layer_size,
 
         # training
-        n_episodes=1000,
+        n_episodes=2000,
         steps_before_learning=50,
         steps_per_episode=10000,
-        goal_distance=5,
+        goal_distance=10,
     )
 
     wandb.init(
@@ -45,7 +45,7 @@ for num_layers in [5,6,7,8,9]:
 
     policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
-    spot_env = SpotEnvironmentNoFalls(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
+    spot_env = SpotEnvironmentProgress(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
     agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
 
     agent.train()
