@@ -2,10 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-# from environment_no_falls import SpotEnvironmentNoFalls
-# from environment_no_falls_v2 import SpotEnvironmentNoFalls
-# from environment_no_falls_v3 import SpotEnvironmentNoFalls
-from environment_foot_contact import SpotEnvironmentNoFalls
+from environment_natural_motion import SpotEnvironmentNaturalMotion
 
 wandb.login()
 
@@ -21,7 +18,7 @@ for model in models:
   timestamp=model[0]
   run_id=model[1]
   project_name = "spot-natural-motion"
-  sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
+  sample_env = SpotEnvironmentNaturalMotion(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
@@ -52,7 +49,7 @@ for model in models:
       critic_model,
       target_critic_model,
   )
-  spot_env = SpotEnvironmentNoFalls(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
+  spot_env = SpotEnvironmentNaturalMotion(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
   agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
 
   agent.train()

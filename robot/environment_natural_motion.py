@@ -5,7 +5,7 @@ import wandb
 
 from environment import SpotEnvironment
 
-class SpotEnvironmentNoFalls(SpotEnvironment):
+class SpotEnvironmentNaturalMotion(SpotEnvironment):
     def get_observation(self):
       bodies=[
         'trunk',
@@ -110,15 +110,13 @@ class SpotEnvironmentNoFalls(SpotEnvironment):
 
         # the default reward is based on how far it got compared to destination
         # the closer to the destination - the more the reward will increase
-        reward = reached_distance
-        combined_reward = reward + trunk_orientation_reward+trunk_height_reward
+        reward = reached_distance + trunk_orientation_reward+trunk_height_reward
 
         wandb.log({"Trunk Height": trunk_height})
         wandb.log({"Trunk Height Reward": trunk_height_reward})
         wandb.log({"Trunk Orientation": trunk_orientation})
         wandb.log({"Trunk Orientation Reward": trunk_orientation_reward})
         wandb.log({"Reached distance": reached_distance})
-        wandb.log({"Combined Reward": combined_reward})
         wandb.log({"Time": self.data.time})
 
         if reached_distance>self.max_distance:
