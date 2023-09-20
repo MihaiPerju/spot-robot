@@ -35,14 +35,12 @@ for num_layers in [1,2,3,4,5,6,7]:
 
     wandb.init(
       name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
-      project="spot-foot-contact", 
+      project="spot-progress", 
       config=config, 
       reinit=True
     )
     
     config = wandb.config
-    print(config)
-
     policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
     spot_env = SpotEnvironmentProgress(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
