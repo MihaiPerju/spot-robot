@@ -130,10 +130,10 @@ class DDPG():
 
   def save_weights(self):
     timestamp = time.strftime("%Y%m%d%H%M%S")
-    actor_filename = f"actor_{timestamp}.h5"
-    target_actor_filename = f"target_actor_{timestamp}.h5"
-    critic_filename = f"critic_{timestamp}.h5"
-    target_critic_filename = f"target_critic_{timestamp}.h5"
+    actor_filename = f"models/actor_{timestamp}.h5"
+    target_actor_filename = f"models/target_actor_{timestamp}.h5"
+    critic_filename = f"models/critic_{timestamp}.h5"
+    target_critic_filename = f"models/target_critic_{timestamp}.h5"
 
     self.actor.save(actor_filename)
     self.target_actor.save(target_actor_filename)
