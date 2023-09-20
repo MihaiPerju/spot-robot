@@ -2,6 +2,7 @@
 **/__pycache__
 env
 robot/videos/*
+robot/models/*
 robot/.DS_Store
 robot/MUJOCO_LOG.TXT
 

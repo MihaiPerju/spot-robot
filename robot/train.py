@@ -6,8 +6,8 @@ from environment_progress import SpotEnvironmentProgress
 
 wandb.login()
 
-for num_layers in [1,2,3,4,5,6,7]:
-  for layer_size in [50,55,65,70]:
+for layer_size in [50,55,65,70]:
+  for num_layers in [1,2,3,4,5,6,7]:
     sample_env = SpotEnvironmentProgress(steps_per_episode=300, goal_distance=100)
     observation_sample = sample_env.get_observation()
 
