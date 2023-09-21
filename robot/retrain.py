@@ -10,24 +10,25 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230918203117", "snx86g3n"),
-  ("20230918211810", "tngmr26c")
+  ("20230921102027", "nkket274"),
+  ("20230921033233", "hgaqsb8a"),
+  ("20230921012010", "1unkb2ac")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-natural-motion"
+  project_name = "spot-progress"
   sample_env = SpotEnvironmentNaturalMotion(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
-  run.config['n_episodes']=5000
+  run.config['n_episodes']=10000
   run.config['steps_per_episode']=100000
   
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project="spot-natural-motion-2", 
+    project="spot-progress-2", 
     config=run.config, 
     reinit=True
     )
@@ -38,10 +39,10 @@ for model in models:
 
   policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
-  actor_model = wandb.restore(f'actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
-  target_actor_model = wandb.restore(f'target_actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
-  critic_model = wandb.restore(f'critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
-  target_critic_model = wandb.restore(f'target_critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  actor_model = wandb.restore(f'models/actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  target_actor_model = wandb.restore(f'models/target_actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  critic_model = wandb.restore(f'models/critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  target_critic_model = wandb.restore(f'models/target_critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
 
   policy.load_weights(
       actor_model,
