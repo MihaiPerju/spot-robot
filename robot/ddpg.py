@@ -1,15 +1,9 @@
 import random
 import time
-import mujoco
 from collections import deque
-import gym
-from gym import spaces
-from gym.utils import seeding
 import numpy as np
 import tensorflow as tf
-from collections import namedtuple
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+
 # from IPython.display import display, clear_output
 import wandb
 import os
@@ -98,6 +92,7 @@ class DDPG():
       target_q_values = rewards+self.gamma*target_q_values*(1-dones)
 
       critic_loss = tf.keras.losses.MSE(target_q_values, q_values)
+      wandb.log({"Loss": critic_loss})
 
     critic_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
     self.critic_optimizer.apply_gradients(zip(critic_gradient, self.critic.trainable_variables))

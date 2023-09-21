@@ -10,13 +10,13 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230920231056", "ddsuml0s"),
+  ("20230921204441", "kivlu39z")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-progress"
+  project_name = "spot-progress-2"
   sample_env = SpotEnvironmentProgress(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
