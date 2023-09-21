@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_foot_contact import SpotEnvironmentNoFalls
+from environment_progress import SpotEnvironmentProgress
 
 wandb.login()
 
@@ -10,14 +10,14 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230918203117", "snx86g3n"),
+  ("20230920231056", "ddsuml0s"),
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-natural-motion"
-  sample_env = SpotEnvironmentNoFalls(steps_per_episode=300, goal_distance=100)
+  project_name = "spot-progress"
+  sample_env = SpotEnvironmentProgress(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
@@ -33,10 +33,10 @@ for model in models:
 
   policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
-  actor_model = wandb.restore(f'actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
-  target_actor_model = wandb.restore(f'target_actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
-  critic_model = wandb.restore(f'critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
-  target_critic_model = wandb.restore(f'target_critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  actor_model = wandb.restore(f'models/actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  target_actor_model = wandb.restore(f'models/target_actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  critic_model = wandb.restore(f'models/critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
+  target_critic_model = wandb.restore(f'models/target_critic_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
 
   policy.load_weights(
       actor_model,
@@ -44,7 +44,7 @@ for model in models:
       critic_model,
       target_critic_model,
   )
-  spot_env = SpotEnvironmentNoFalls(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance, should_render=True)
+  spot_env = SpotEnvironmentProgress(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance, should_render=True)
   agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
 
   max_distance = 0
