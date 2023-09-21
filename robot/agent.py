@@ -107,7 +107,7 @@ class Agent():
 
         obs=next_obs
 
-      if episode%100==0:
+      if episode%1000==0:
         tf.keras.backend.clear_session()
  
   def interact(self):
