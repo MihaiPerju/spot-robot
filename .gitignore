@@ -1,5 +1,6 @@
 **/wandb
 **/__pycache__
+.DS_Store
 env
 robot/videos/*
 robot/models/*
