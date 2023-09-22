@@ -26,7 +26,8 @@ class DDPG():
     self.target_actor.set_weights(self.actor.get_weights())
     self.target_critic.set_weights(self.critic.get_weights())
     self.ou = ou
-    self.reset_noise()
+    self.ou_noise=OrnsteinUhlenbeckProcess(size=self.ou['size'], mu=self.ou['mu'], theta=self.ou['theta'], sigma=self.ou['sigma'])
+    
 
   def build_actor_network(self, in_shape, out_shape, num_layers, layer_size, ):
     model = tf.keras.models.Sequential()
@@ -143,7 +144,3 @@ class DDPG():
     self.target_actor.load_weights(target_actor_model.name)
     self.critic.load_weights(critic_model.name)
     self.target_critic.load_weights(target_critic_model.name)
-
-  def reset_noise(self):        
-    self.ou_noise=OrnsteinUhlenbeckProcess(size=self.ou['size'], mu=self.ou['mu'], theta=self.ou['theta'], sigma=self.ou['sigma'])
-
