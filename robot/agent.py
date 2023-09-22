@@ -1,16 +1,9 @@
 import random
-import time
-import mujoco
 from collections import deque
-import gym
-from gym import spaces
-from gym.utils import seeding
-import numpy as np
 import tensorflow as tf
 from collections import namedtuple
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-# from IPython.display import display, clear_output
 import wandb
 import os
 

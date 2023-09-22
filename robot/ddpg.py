@@ -1,15 +1,10 @@
-import random
+
 import time
-from collections import deque
 import numpy as np
 import tensorflow as tf
-
-# from IPython.display import display, clear_output
 import wandb
-import os
 
 from noise import OrnsteinUhlenbeckProcess
-
 
 class DDPG():
   def __init__(self, state_shape, action_shape, ou, num_layers=5, layer_size=10, tau=0.005, gamma=0.99):
@@ -92,7 +87,7 @@ class DDPG():
       target_q_values = rewards+self.gamma*target_q_values*(1-dones)
 
       critic_loss = tf.keras.losses.MSE(target_q_values, q_values)
-      wandb.log({"Loss": critic_loss})
+      wandb.log({"Critic Loss": np.mean(critic_loss)})
 
     critic_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
     self.critic_optimizer.apply_gradients(zip(critic_gradient, self.critic.trainable_variables))
@@ -104,6 +99,7 @@ class DDPG():
       critic_value = self.critic([observations, actions])
 
       actor_loss = -tf.math.reduce_mean(critic_value)
+      wandb.log({"Actor Loss": actor_loss})
 
     actor_gradient = tape.gradient(actor_loss, self.actor.trainable_variables)
     self.actor_optimizer.apply_gradients(zip(actor_gradient, self.actor.trainable_variables))

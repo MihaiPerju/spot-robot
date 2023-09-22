@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_lite import SpotEnvironmentLite as SpotEnvironment
+from environment_lite_2 import SpotEnvironmentLite as SpotEnvironment
 
 wandb.login()
 
@@ -35,7 +35,7 @@ for layer_size in [50,55,65,70]:
 
     wandb.init(
       name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
-      project="spot-lite", 
+      project="spot-lite-2", 
       config=config, 
       reinit=True
     )

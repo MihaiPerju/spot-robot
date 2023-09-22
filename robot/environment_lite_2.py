@@ -5,7 +5,7 @@ import wandb
 
 from environment import SpotEnvironment
 
-class SpotEnvironmentProgress(SpotEnvironment):
+class SpotEnvironmentLite(SpotEnvironment):
     def get_observation(self):
       bodies=[
         'trunk',
@@ -25,20 +25,24 @@ class SpotEnvironmentProgress(SpotEnvironment):
       observation = []
 
       # reached_distance = self.data.body("trunk").xpos[0]
+      trunk_rotation = self.get_z_axis_rotation()
+      trunk_orientation = self.get_y_axis_rotation()-0.69
+
       # distance_to_goal = self.goal_distance - reached_distance
 
-      trunk_rotation = self.get_z_axis_rotation()
     #   trunk_height = self.data.body("trunk").xpos[2]
     #   trunk_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "trunk")
 
       observation.append([
           trunk_rotation,
+          trunk_orientation,
+          # reached_distance,
       ])
 
       for body in bodies:
         body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, body)
         observation.append([
-            *self.data.xpos[body_id],
+            # *self.data.xpos[body_id],
             self.data.qpos[body_id],
             self.data.qvel[body_id],
         ])
@@ -105,14 +109,12 @@ class SpotEnvironmentProgress(SpotEnvironment):
         z_axis_rotation=self.get_z_axis_rotation()
         
         progress = reached_distance-self.last_distance
-        reward = progress
+        reward = reached_distance + progress
 
         self.last_distance=reached_distance
         if reached_distance>self.max_distance:
           self.max_distance=reached_distance
           wandb.log({"Max distance": reached_distance})
-
-
 
         if z_axis_rotation<0:
             reward=-1
