@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_lite_2 import SpotEnvironmentLite as SpotEnvironment
+from environment_lite import SpotEnvironmentLite as SpotEnvironment
 
 wandb.login()
 
@@ -14,7 +14,7 @@ for nn_conf in [
     [5, 70],
     [5, 75],
 ]:
-    layer_size, num_layers = nn_conf
+    num_layers,layer_size = nn_conf
     sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
     observation_sample = sample_env.get_observation()
 

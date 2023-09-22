@@ -24,12 +24,11 @@ class SpotEnvironmentLite(SpotEnvironment):
       ]
       observation = []
 
+      trunk_rotation = self.get_z_axis_rotation()
       # reached_distance = self.data.body("trunk").xpos[0]
       # distance_to_goal = self.goal_distance - reached_distance
-
-      trunk_rotation = self.get_z_axis_rotation()
-    #   trunk_height = self.data.body("trunk").xpos[2]
-    #   trunk_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "trunk")
+      # trunk_height = self.data.body("trunk").xpos[2]
+      # trunk_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "trunk")
 
       observation.append([
           trunk_rotation,
