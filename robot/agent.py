@@ -70,7 +70,6 @@ class Agent():
   def train(self):
     for episode in range(self.n_episodes):
       self.episode=episode
-      self.policy.reset_noise()
 
       if self.episode%500==0:
         self.policy.save_weights()
