@@ -38,7 +38,7 @@ class SpotEnvironmentProgress(SpotEnvironment):
       for body in bodies:
         body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, body)
         observation.append([
-            # *self.data.xpos[body_id], # XPOS is removed
+            *self.data.xpos[body_id],
             self.data.qpos[body_id],
             self.data.qvel[body_id],
         ])
