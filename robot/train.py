@@ -6,13 +6,20 @@ from environment_lite_2 import SpotEnvironmentLite as SpotEnvironment
 
 wandb.login()
 
-for layer_size in [55,65,70]:
-  for num_layers in [1,2,3,4,5,6,7]:
+for nn_conf in [
+    [3, 65],
+    [3, 70],
+    [3, 75],
+    [5, 65],
+    [5, 70],
+    [5, 75],
+]:
+    layer_size, num_layers = nn_conf
     sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
     observation_sample = sample_env.get_observation()
 
-    config=dict(
-        ou = dict(
+    config = dict(
+        ou=dict(
             size=8,
             mu=0,
             theta=0.8,
@@ -34,17 +41,20 @@ for layer_size in [55,65,70]:
     )
 
     wandb.init(
-      name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
-      project="spot-lite-2", 
-      config=config, 
-      reinit=True
+        name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
+        project="spot-control",
+        config=config,
+        reinit=True
     )
-    
-    config = wandb.config
-    policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
-    spot_env = SpotEnvironment(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
-    agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
+    config = wandb.config
+    policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape,
+                  num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
+
+    spot_env = SpotEnvironment(
+        steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
+    agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes,
+                  steps_before_learning=config.steps_before_learning,)
 
     agent.train()
     policy.save_weights()

@@ -24,27 +24,24 @@ class SpotEnvironmentLite(SpotEnvironment):
       ]
       observation = []
 
-      # reached_distance = self.data.body("trunk").xpos[0]
-      trunk_rotation = self.get_z_axis_rotation()
-      trunk_orientation = self.get_y_axis_rotation()-0.69
-
+      reached_distance = self.data.body("trunk").xpos[0]
       # distance_to_goal = self.goal_distance - reached_distance
 
+      trunk_rotation = self.get_z_axis_rotation()
     #   trunk_height = self.data.body("trunk").xpos[2]
     #   trunk_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "trunk")
 
       observation.append([
           trunk_rotation,
-          trunk_orientation,
-          # reached_distance,
+          reached_distance
       ])
 
       for body in bodies:
         body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, body)
         observation.append([
-            # *self.data.xpos[body_id],
             self.data.qpos[body_id],
             self.data.qvel[body_id],
+            # *self.data.xpos[body_id],
         ])
 
         # is the foot in contact with the ground?
@@ -108,8 +105,8 @@ class SpotEnvironmentLite(SpotEnvironment):
 
         z_axis_rotation=self.get_z_axis_rotation()
         
-        progress = reached_distance-self.last_distance
-        reward = progress
+        # progress = reached_distance-self.last_distance
+        reward = reached_distance
 
         self.last_distance=reached_distance
         if reached_distance>self.max_distance:

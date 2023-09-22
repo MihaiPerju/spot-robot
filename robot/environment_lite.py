@@ -38,9 +38,9 @@ class SpotEnvironmentLite(SpotEnvironment):
       for body in bodies:
         body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, body)
         observation.append([
-            # *self.data.xpos[body_id],
             self.data.qpos[body_id],
             self.data.qvel[body_id],
+            # *self.data.xpos[body_id],
         ])
 
         # is the foot in contact with the ground?
@@ -104,15 +104,13 @@ class SpotEnvironmentLite(SpotEnvironment):
 
         z_axis_rotation=self.get_z_axis_rotation()
         
-        progress = reached_distance-self.last_distance
-        reward = progress
+        # progress = reached_distance-self.last_distance
+        reward = reached_distance
 
         self.last_distance=reached_distance
         if reached_distance>self.max_distance:
           self.max_distance=reached_distance
           wandb.log({"Max distance": reached_distance})
-
-
 
         if z_axis_rotation<0:
             reward=-1
