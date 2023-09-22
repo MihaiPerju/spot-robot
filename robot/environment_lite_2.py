@@ -109,7 +109,7 @@ class SpotEnvironmentLite(SpotEnvironment):
         z_axis_rotation=self.get_z_axis_rotation()
         
         progress = reached_distance-self.last_distance
-        reward = reached_distance + progress
+        reward = progress
 
         self.last_distance=reached_distance
         if reached_distance>self.max_distance:

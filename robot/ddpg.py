@@ -87,7 +87,8 @@ class DDPG():
       target_q_values = rewards+self.gamma*target_q_values*(1-dones)
 
       critic_loss = tf.keras.losses.MSE(target_q_values, q_values)
-      wandb.log({"Critic Loss": np.mean(critic_loss)})
+      critic_loss_mean = np.mean(critic_loss)
+      wandb.log({"Critic Loss": critic_loss_mean})
 
     critic_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
     self.critic_optimizer.apply_gradients(zip(critic_gradient, self.critic.trainable_variables))
