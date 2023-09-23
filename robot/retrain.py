@@ -10,31 +10,31 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230923043356", "6hc3dbz0")
+  ("20230923052835", "k33r8uzc"),
+  ("20230923044407", "wcco1ts7"),
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-learning-rate"
+  project_name = "spot-learning-rate-0.01"
   sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
   run.config['n_episodes']=100000
   run.config['steps_per_episode']=100000
-  
+  run.config['ou']['theta']=0.1
+  run.config['ou']['sigma']=0.1
+
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project = "spot-lr-noise",
+    project = "spot-lr-noise-0.01",
     config=run.config, 
     reinit=True
     )
   config = wandb.config
-
-  config.ou['theta']=0.1
-  config.ou['sigma']=0.1
-
+  
   policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
   actor_model = wandb.restore(f'models/actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")
