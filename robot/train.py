@@ -42,7 +42,7 @@ for nn_conf in [
 
     wandb.init(
         name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
-        project="spot-control-2",
+        project="spot-control-3",
         config=config,
         reinit=True
     )
