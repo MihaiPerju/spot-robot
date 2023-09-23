@@ -7,7 +7,17 @@ import wandb
 from noise import OrnsteinUhlenbeckProcess
 
 class DDPG():
-  def __init__(self, state_shape, action_shape, ou, num_layers=5, layer_size=10, tau=0.005, gamma=0.99):
+  def __init__(
+      self, 
+      state_shape, 
+      action_shape, 
+      ou, 
+      num_layers=5, 
+      layer_size=10, 
+      tau=0.005, 
+      gamma=0.99,
+      learning_rate=0.001,
+      ):
 
     self.tau = tau
     self.gamma = gamma
@@ -18,9 +28,10 @@ class DDPG():
     self.critic = self.build_critic_network(state_shape, action_shape, num_layers, layer_size )
     self.target_actor = self.build_actor_network(state_shape, action_shape, num_layers, layer_size )
     self.target_critic = self.build_critic_network(state_shape, action_shape, num_layers, layer_size )
+    self.learning_rate=learning_rate
 
-    self.actor_optimizer = tf.keras.optimizers.Adam()
-    self.critic_optimizer = tf.keras.optimizers.Adam()
+    self.actor_optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
+    self.critic_optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
 
     # setting the weights for target networks
     self.target_actor.set_weights(self.actor.get_weights())
