@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_progress import SpotEnvironmentProgress
+from environment_lite_3 import SpotEnvironmentLite as SpotEnvironment
 
 wandb.login()
 
@@ -10,14 +10,14 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230921204441", "kivlu39z"),
+  ("20230923043356", "6hc3dbz0")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-progress-2"
-  sample_env = SpotEnvironmentProgress(steps_per_episode=300, goal_distance=100)
+  project_name = "spot-learning-rate"
+  sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
@@ -26,14 +26,14 @@ for model in models:
   
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project="spot-progress-3", 
+    project = "spot-lr-noise",
     config=run.config, 
     reinit=True
     )
   config = wandb.config
 
-  # config.ou['theta']=0.8
-  # config.ou['sigma']=0.5
+  config.ou['theta']=0.1
+  config.ou['sigma']=0.1
 
   policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
@@ -48,7 +48,7 @@ for model in models:
       critic_model,
       target_critic_model,
   )
-  spot_env = SpotEnvironmentProgress(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
+  spot_env = SpotEnvironment(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
   agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
 
   agent.train()

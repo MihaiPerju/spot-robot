@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_progress import SpotEnvironmentProgress
+from environment_lite_3 import SpotEnvironmentLite as SpotEnvironment
 
 wandb.login()
 
@@ -10,14 +10,14 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230921204441", "kivlu39z")
+  ("20230923124626", "3fekxel6")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-progress-2"
-  sample_env = SpotEnvironmentProgress(steps_per_episode=300, goal_distance=100)
+  project_name = "spot-lr-noise"
+  sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
@@ -44,7 +44,7 @@ for model in models:
       critic_model,
       target_critic_model,
   )
-  spot_env = SpotEnvironmentProgress(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance, should_render=True)
+  spot_env = SpotEnvironment(steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance, should_render=True)
   agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes, steps_before_learning=config.steps_before_learning,)
 
   max_distance = 0
