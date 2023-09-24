@@ -44,7 +44,7 @@ class DDPG():
         self.target_actor.set_weights(self.actor.get_weights())
         self.target_critic.set_weights(self.critic.get_weights())
         self.ou = ou
-        self.set_noise(1)
+        self.set_noise(0)
 
     def build_actor_network(self, in_shape, out_shape, num_layers, layer_size, ):
         model = tf.keras.models.Sequential()
@@ -194,7 +194,7 @@ class DDPG():
         self.ou_noise = OrnsteinUhlenbeckProcess(
             size=self.ou['size'],
             mu=self.ou['mu'],
-            theta=1.0,
-            sigma=0.0001
+            theta=0.1,
+            sigma=0.1
         )
         return

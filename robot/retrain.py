@@ -24,17 +24,17 @@ for model in models:
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
   run.config['n_episodes']=100000
   run.config['steps_per_episode']=100000
-  run.config['ou']['theta']=0.1
-  run.config['ou']['sigma']=0.1
+  run.config['ou']['theta']=0.8
+  run.config['ou']['sigma']=0.5
 
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project = "spot-lr-noise",
+    project = "spot-lr-noise-2",
     config=run.config, 
     reinit=True
     )
   config = wandb.config
-  
+
   policy = DDPG(state_shape=config.state_shape, action_shape=config.action_shape, num_layers=config.num_layers, layer_size=config.layer_size, ou=config.ou)
 
   actor_model = wandb.restore(f'models/actor_{timestamp}.h5', run_path=f"mikeperju/{project_name}/{run_id}")

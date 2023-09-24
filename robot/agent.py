@@ -105,9 +105,9 @@ class Agent():
                     reached_distance_variance = self.env.get_reached_distances_variance()
                     print(f"REACHED DIST VARIANCE: {reached_distance_variance}")
                     wandb.log({"Reached distance variance": reached_distance_variance})
-                    if reached_distance_variance < 0.05 and self.policy.noise_state == 0:
+                    if reached_distance_variance < 0.01 and self.policy.noise_state == 0:
                         self.policy.set_noise(1)
-                    if reached_distance_variance >= 0.05 and self.policy.noise_state == 1:
+                    if reached_distance_variance >= 0.01 and self.policy.noise_state == 1:
                         self.policy.set_noise(0)
 
             # cleaning the memory and saving the weights
