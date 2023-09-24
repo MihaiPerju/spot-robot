@@ -10,7 +10,7 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230924020458", "1anpa8wz")
+  ("20230924023209", "uw3mz9rw")
 ]
 
 for model in models:
@@ -21,8 +21,7 @@ for model in models:
   observation_sample = sample_env.get_observation()
 
   run = wandb_api.run(f"mikeperju/{project_name}/{run_id}")
-  run.config['n_episodes']=1000000
-  run.config['steps_per_episode']=100000
+  run.config['steps_per_episode']=1000
   
   wandb.init(
     name="visualisation",
