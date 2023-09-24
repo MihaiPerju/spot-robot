@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_lite_3 import SpotEnvironmentLite as SpotEnvironment
+from environment_lr import SpotEnvironment
 
 wandb.login()
 
@@ -10,14 +10,14 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230923052835", "k33r8uzc"),
-  ("20230923044407", "wcco1ts7"),
+  ("20230923043356", "6hc3dbz0"),
+  ("20230923031906", "ohugu5yb"),
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-learning-rate-0.01"
+  project_name = "spot-learning-rate"
   sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
@@ -29,7 +29,7 @@ for model in models:
 
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project = "spot-lr-noise-0.01",
+    project = "spot-lr-noise",
     config=run.config, 
     reinit=True
     )

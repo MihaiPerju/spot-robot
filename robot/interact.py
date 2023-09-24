@@ -2,7 +2,7 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_lite_3 import SpotEnvironmentLite as SpotEnvironment
+from environment_lr import SpotEnvironment
 
 wandb.login()
 
@@ -10,7 +10,7 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230923124626", "3fekxel6")
+  ("20230924020458", "1anpa8wz")
 ]
 
 for model in models:
