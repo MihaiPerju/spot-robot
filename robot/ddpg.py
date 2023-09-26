@@ -3,8 +3,11 @@ import time
 import numpy as np
 import tensorflow as tf
 import wandb
+import platform
 
 from noise import OrnsteinUhlenbeckProcess
+
+machine = platform.machine()
 
 
 class DDPG():
@@ -35,10 +38,16 @@ class DDPG():
             state_shape, action_shape, num_layers, layer_size)
         self.learning_rate = learning_rate
 
-        self.actor_optimizer = tf.keras.optimizers.Adam(
+        if machine == "arm64":
+            self.actor_optimizer = tf.keras.optimizers.legacy.Adam(
+                learning_rate=self.learning_rate)
+            self.critic_optimizer = tf.keras.optimizers.legacy.Adam(
             learning_rate=self.learning_rate)
-        self.critic_optimizer = tf.keras.optimizers.Adam(
-            learning_rate=self.learning_rate)
+        else:
+            self.actor_optimizer = tf.keras.optimizers.Adam(
+                learning_rate=self.learning_rate)
+            self.critic_optimizer = tf.keras.optimizers.Adam(
+                learning_rate=self.learning_rate)
 
         # setting the weights for target networks
         self.target_actor.set_weights(self.actor.get_weights())

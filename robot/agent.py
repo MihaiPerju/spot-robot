@@ -80,7 +80,6 @@ class Agent():
             obs = self.env.reset()
             done = False
             while not done:
-
                 self.total_steps += 1
 
                 action = self.policy.select_action(obs)
@@ -110,10 +109,10 @@ class Agent():
                     if reached_distance_variance >= 0.01 and self.policy.noise_state == 1:
                         self.policy.set_noise(0)
 
-            # cleaning the memory and saving the weights
-            if self.episode % 1000 == 0 or self.total_steps % 10000 == 0:
-                self.policy.save_weights()
-                tf.keras.backend.clear_session()
+                # cleaning the memory and saving the weights
+                if self.episode % 1000 == 0 or self.total_steps % 100000 == 0:
+                    self.policy.save_weights()
+                    tf.keras.backend.clear_session()
 
     def interact(self):
         self.log(f"Interacting with the environment")
