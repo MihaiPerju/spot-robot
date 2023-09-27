@@ -81,6 +81,7 @@ class Agent():
             done = False
             while not done:
                 self.total_steps += 1
+                wandb.log({"Total steps": self.total_steps})
 
                 action = self.policy.select_action(obs)
                 next_obs, reward, done, _ = self.env.step(action)
@@ -102,8 +103,8 @@ class Agent():
                 # enabling or disabling noise
                 if self.total_steps % 1000 == 0:
                     reached_distance_variance = self.env.get_reached_distances_variance()
-                    print(f"REACHED DIST VARIANCE: {reached_distance_variance}")
-                    wandb.log({"Reached distance variance": reached_distance_variance})
+                    wandb.log(
+                        {"Reached distance variance": reached_distance_variance})
                     if reached_distance_variance < 0.01 and self.policy.noise_state == 0:
                         self.policy.set_noise(1)
                     if reached_distance_variance >= 0.01 and self.policy.noise_state == 1:

@@ -10,7 +10,7 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230924023209", "uw3mz9rw")
+  ("20230927155656", "tp4gis03")
 ]
 
 for model in models:
