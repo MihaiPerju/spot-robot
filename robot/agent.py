@@ -111,7 +111,7 @@ class Agent():
                         self.policy.set_noise(0)
 
                 # cleaning the memory and saving the weights
-                if self.episode % 1000 == 0 or self.total_steps % 100000 == 0:
+                if self.episode % 1001 == 0 or self.total_steps % 100001 == 0:
                     self.policy.save_weights()
                     tf.keras.backend.clear_session()
 
