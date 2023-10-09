@@ -5,6 +5,7 @@ import wandb
 
 import environment
 
+
 class SpotEnvironment(environment.SpotEnvironment):
     def get_observation(self):
         bodies = [
@@ -83,6 +84,18 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         self.n_steps += 1
 
+        action_avg = 0
+        for i in range(8):
+            a = raw_action[i]
+            action_avg += abs(a)
+            wandb.log({f"Action {i+1}": a})
+
+        action_avg /= len(raw_action)
+        action_progress = self.last_action_avg-action_avg
+
+        wandb.log({"Average action": action_avg})
+        wandb.log({"Action progress": action_progress})
+
         action = self.reshape(raw_action)
         self.data.ctrl = action
 
@@ -102,8 +115,10 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         z_axis_rotation = self.get_z_axis_rotation()
 
-        # progress = reached_distance-self.last_distance
-        reward = reached_distance
+        distance_progress = reached_distance-self.last_distance
+        wandb.log({"Distance progress": distance_progress})
+
+        reward = action_avg + distance_progress
 
         self.last_distance = reached_distance
         if reached_distance > self.max_distance:
@@ -111,7 +126,6 @@ class SpotEnvironment(environment.SpotEnvironment):
             wandb.log({"Max distance": reached_distance})
 
         if z_axis_rotation < 0:
-            reward = -1
             done = True
             self.n_steps = 0
 

@@ -2,17 +2,13 @@ import wandb
 
 from ddpg import DDPG
 from agent import Agent
-from environment_lite_3 import SpotEnvironmentLite as SpotEnvironment
+from environment_lr import SpotEnvironment
 
 wandb.login()
 
 for nn_conf in [
-    [3, 65],
-    [3, 70],
-    [3, 75],
     [5, 65],
     [5, 70],
-    [5, 75],
 ]:
     num_layers, layer_size = nn_conf
     sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
@@ -35,15 +31,17 @@ for nn_conf in [
         learning_rate=0.1,
 
         # training
-        n_episodes=2000,
+        n_episodes=10000,
         steps_before_learning=50,
         steps_per_episode=10000,
         goal_distance=10,
+
+        checkpoint_episode_interval=101,
     )
 
     wandb.init(
         name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
-        project="spot-learning-rate",
+        project="spot-experimental",
         config=config,
         reinit=True
     )
@@ -60,8 +58,14 @@ for nn_conf in [
 
     spot_env = SpotEnvironment(
         steps_per_episode=config.steps_per_episode, goal_distance=config.goal_distance)
-    agent = Agent(env=spot_env, policy=policy, n_episodes=config.n_episodes,
-                  steps_before_learning=config.steps_before_learning,)
+    
+    agent = Agent(
+        env=spot_env,
+        policy=policy,
+        n_episodes=config.n_episodes,
+        steps_before_learning=config.steps_before_learning,
+        checkpoint_episode_interval=config.checkpoint_episode_interval,
+    )
 
     agent.train()
     policy.save_weights()

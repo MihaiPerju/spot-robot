@@ -10,13 +10,13 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230927155656", "tp4gis03")
+  ("20230929170049", "ulk051ah")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-lr-noise"
+  project_name = "spot-experimental"
   sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 

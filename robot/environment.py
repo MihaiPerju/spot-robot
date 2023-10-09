@@ -76,6 +76,8 @@ class SpotEnvironment(gym.Env):
         self.steps_per_episode = steps_per_episode
         self.reached_distances = deque(maxlen=1000)
 
+        self.last_action_avg = 0
+
         if should_render:
             self.recorder = Recorder(self.model)
 

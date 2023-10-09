@@ -21,15 +21,20 @@ class Agent():
         policy,
 
         n_episodes,
+
+        checkpoint_episode_interval=100,
         steps_before_learning=20,
 
         experience_replay_size=10000,
         batch_size=128,
+
     ):
         self.env = env
         self.policy = policy
         self.n_episodes = n_episodes
         self.steps_before_learning = steps_before_learning
+        self.checkpoint_episode_interval = checkpoint_episode_interval
+        self.last_checkpoint = 0
 
         self.experience_replay = deque(maxlen=experience_replay_size)
         self.batch_size = batch_size
@@ -101,17 +106,25 @@ class Agent():
                 obs = next_obs
 
                 # enabling or disabling noise
-                if self.total_steps % 1000 == 0:
-                    reached_distance_variance = self.env.get_reached_distances_variance()
-                    wandb.log(
-                        {"Reached distance variance": reached_distance_variance})
-                    if reached_distance_variance < 0.01 and self.policy.noise_state == 0:
-                        self.policy.set_noise(1)
-                    if reached_distance_variance >= 0.01 and self.policy.noise_state == 1:
-                        self.policy.set_noise(0)
+                # if self.total_steps % 1000 == 0:
+                #     reached_distance_variance = self.env.get_reached_distances_variance()
+                #     wandb.log(
+                #         {"Reached distance variance": reached_distance_variance})
+                #     if reached_distance_variance < 0.01 and self.policy.noise_state == 0:
+                #         self.policy.set_noise(1)
+                #     if reached_distance_variance >= 0.01 and self.policy.noise_state == 1:
+                #         self.policy.set_noise(0)
 
                 # cleaning the memory and saving the weights
-                if self.episode % 1001 == 0 or self.total_steps % 40001 == 0:
+                if (
+                        (
+                            self.episode % self.checkpoint_episode_interval == 0
+                            and self.last_checkpoint != self.episode
+                        )
+                        or (self.total_steps % 40001 == 0)
+                ):
+                    self.last_checkpoint = self.episode
+
                     self.policy.save_weights()
                     tf.keras.backend.clear_session()
 
