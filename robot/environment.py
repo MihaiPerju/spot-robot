@@ -70,13 +70,13 @@ class SpotEnvironment(gym.Env):
         self.should_render = should_render
         self.goal_distance = goal_distance
         self.max_distance = -1
-        self.last_distance = -1
+        self.max_reward = -1
+        self.distance_reached_prev = -1
 
         self.n_steps = 0
         self.steps_per_episode = steps_per_episode
-        self.reached_distances = deque(maxlen=1000)
 
-        self.last_action_avg = 0
+        self.last_action = np.zeros(8)
 
         if should_render:
             self.recorder = Recorder(self.model)
@@ -205,7 +205,6 @@ class SpotEnvironment(gym.Env):
             self.n_steps = 0
 
         reached_distance = self.data.body("trunk").xpos[0]
-        self.reached_distances.append(reached_distance)
         wandb.log({"Reached distance": reached_distance})
 
         z_axis_rotation = self.get_z_axis_rotation()
@@ -238,6 +237,3 @@ class SpotEnvironment(gym.Env):
 
         if len(self.recorder.frames) < self.data.time * self.recorder.framerate:
             self.recorder.add_frame(self.model, self.data)
-
-    def get_reached_distances_variance(self):
-        return np.var(self.reached_distances)

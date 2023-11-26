@@ -7,8 +7,7 @@ from environment_lr import SpotEnvironment
 wandb.login()
 
 for nn_conf in [
-    [5, 65],
-    [5, 70],
+    [3, 512],
 ]:
     num_layers, layer_size = nn_conf
     sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
@@ -41,7 +40,7 @@ for nn_conf in [
 
     wandb.init(
         name=f"{num_layers}x{layer_size} neurons {config['n_episodes']} x {config['steps_per_episode']}steps",
-        project="spot-experimental",
+        project="spot-rms",
         config=config,
         reinit=True
     )

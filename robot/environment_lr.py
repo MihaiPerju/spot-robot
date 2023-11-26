@@ -65,7 +65,6 @@ class SpotEnvironment(environment.SpotEnvironment):
         return np.concatenate(observation)
 
     def get_y_axis_rotation(self):
-
         def quaternion_to_rotation_matrix(q):
             w, x, y, z = q
             return np.array([[1 - 2*y*y - 2*z*z, 2*x*y - 2*w*z, 2*x*z + 2*w*y],
@@ -84,17 +83,13 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         self.n_steps += 1
 
-        action_avg = 0
         for i in range(8):
             a = raw_action[i]
-            action_avg += abs(a)
             wandb.log({f"Action {i+1}": a})
 
-        action_avg /= len(raw_action)
-        action_progress = self.last_action_avg-action_avg
-
-        wandb.log({"Average action": action_avg})
-        wandb.log({"Action progress": action_progress})
+        # rms = np.sqrt(np.mean((self.last_action-raw_action)**2))
+        self.last_action = raw_action
+        # wandb.log({"RMS": rms})
 
         action = self.reshape(raw_action)
         self.data.ctrl = action
@@ -110,23 +105,27 @@ class SpotEnvironment(environment.SpotEnvironment):
             self.n_steps = 0
 
         reached_distance = self.data.body("trunk").xpos[0]
-        self.reached_distances.append(reached_distance)
         wandb.log({"Reached distance": reached_distance})
 
         z_axis_rotation = self.get_z_axis_rotation()
 
-        distance_progress = reached_distance-self.last_distance
-        wandb.log({"Distance progress": distance_progress})
+        # distance_progress = reached_distance-self.distance_reached_prev
+        # wandb.log({"Distance progress": distance_progress})
 
-        reward = action_avg + distance_progress
+        reward = -1
 
-        self.last_distance = reached_distance
+        if reached_distance>self.distance_reached_prev:
+            reward = reached_distance
+
+        self.distance_reached_prev = reached_distance
+
         if reached_distance > self.max_distance:
             self.max_distance = reached_distance
             wandb.log({"Max distance": reached_distance})
 
         if z_axis_rotation < 0:
             done = True
+            self.distance_reached_prev=0
             self.n_steps = 0
 
         info = {}
