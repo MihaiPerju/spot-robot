@@ -10,13 +10,13 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20231011062549", "8m2qaa74")
+  ("20231126210949", "qcy5wfjb")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-rms"
+  project_name = "spot-limited-range"
   sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 

@@ -165,10 +165,10 @@ class SpotEnvironment(gym.Env):
         return np.concatenate(observation)
 
     def rescale_action(self, raw_action):
-        low_bound = np.array([0, -0.686, -2.818]*4)
+        low_bound = np.array([0, -0.686, -2.3]*4)
         # high_bound = np.array([0, 4.501, -0.888]*4)
         # new range of motion to prevent unnatural movement
-        high_bound = np.array([0, 2, -0.888]*4)
+        high_bound = np.array([0, 1.3, -1.3]*4)
 
         action_range = high_bound - low_bound
         rescaled_action = low_bound + ((raw_action + 1.0) * 0.5) * action_range

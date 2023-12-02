@@ -10,14 +10,13 @@ wandb.login()
 wandb_api = wandb.Api()
 
 models =[
-  ("20230923043356", "6hc3dbz0"),
-  ("20230923031906", "ohugu5yb"),
+  ("20231126210949", "qcy5wfjb")
 ]
 
 for model in models:
   timestamp=model[0]
   run_id=model[1]
-  project_name = "spot-learning-rate"
+  project_name = "spot-limited-range"
   sample_env = SpotEnvironment(steps_per_episode=300, goal_distance=100)
   observation_sample = sample_env.get_observation()
 
@@ -29,7 +28,7 @@ for model in models:
 
   wandb.init(
     name=f"{run.config['num_layers']}x{run.config['layer_size']} neurons {run.config['n_episodes']} x {run.config['steps_per_episode']}steps",
-    project = "spot-lr-noise-2",
+    project = "spot-limited-range",
     config=run.config, 
     reinit=True
     )

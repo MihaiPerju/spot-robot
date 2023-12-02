@@ -114,7 +114,7 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         reward = -1
 
-        if reached_distance>self.distance_reached_prev:
+        if reached_distance > self.distance_reached_prev:
             reward = reached_distance
 
         self.distance_reached_prev = reached_distance
@@ -125,7 +125,8 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         if z_axis_rotation < 0:
             done = True
-            self.distance_reached_prev=0
+            reward = -1
+            self.distance_reached_prev = 0
             self.n_steps = 0
 
         info = {}
