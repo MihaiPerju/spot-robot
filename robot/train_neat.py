@@ -18,7 +18,7 @@ config = neat.Config(
 )
 op_sys = platform.system()
 timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-current_date = datetime.now().strftime("%Y-%b-%d-%H-%M")
+current_date = datetime.now().strftime("%Y-%b-%d-%H:%M")
 
 logs_dir = f'./neat-models/{op_sys}/{current_date}'
 os.makedirs(logs_dir, exist_ok=True)
@@ -60,7 +60,7 @@ def run_neat():
     population.add_reporter(reporter)
     population.add_reporter(neat.StatisticsReporter())
     population.add_reporter(neat.Checkpointer(
-        generation_interval=1,
+        generation_interval=50,
         time_interval_seconds=1800,  #  30 minutes
         filename_prefix=f'{logs_dir}/')
     )
