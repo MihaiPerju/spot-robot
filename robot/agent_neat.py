@@ -43,11 +43,8 @@ class Agent():
         self.n_steps = 0
         self.total_steps = 0
         self.max_reward = -1
+        self.reward_total = 0
         self.episode = 1
-
-    def update_reward_graph(self):
-        # clear_output(wait=True)
-        os.system('clear')
 
     def log(self, message):
         print(message)
@@ -69,14 +66,8 @@ class Agent():
 
         return {"observations": observations, "actions": actions, "rewards": rewards, "next_observations": next_observations, "dones": dones}
 
-    def learn(self, experience):
-        self.experience_replay.append(experience)
-
-        if (self.total_steps % self.steps_before_learning == 0) and (len(self.experience_replay) > self.batch_size):
-            self.log("LEARN")
-            batch = self.sample_batch(self.batch_size)
-            self.policy.update(batch)
-            
+    def get_total_reward(self):
+        return self.reward_total
 
     def train(self):
         for episode in range(self.n_episodes):
@@ -91,43 +82,15 @@ class Agent():
 
                 action = self.policy.activate(obs)
                 next_obs, reward, done, _ = self.env.step(action)
+                self.reward_total += reward
 
                 if reward > self.max_reward:
                     self.max_reward = reward
                     wandb.log({"Max Reward": reward})
 
-                # adding the reward and plot the new rewards axis
-                # self.rewards.append(reward)
-                self.update_reward_graph()
                 wandb.log({"Reward": reward})
-
                 experience = Experience(obs, action, reward, next_obs, done)
-                self.learn(experience)
-
                 obs = next_obs
-
-                # enabling or disabling noise
-                # if self.total_steps % 1000 == 0:
-                #     reached_distance_variance = self.env.get_reached_distances_variance()
-                #     wandb.log(
-                #         {"Reached distance variance": reached_distance_variance})
-                #     if reached_distance_variance < 0.01 and self.policy.noise_state == 0:
-                #         self.policy.set_noise(1)
-                #     if reached_distance_variance >= 0.01 and self.policy.noise_state == 1:
-                #         self.policy.set_noise(0)
-
-                # cleaning the memory and saving the weights
-                if (
-                        (
-                            self.episode % self.checkpoint_episode_interval == 0
-                            and self.last_checkpoint != self.episode
-                        )
-                        or (self.total_steps % 40001 == 0)
-                ):
-                    self.last_checkpoint = self.episode
-
-                    self.policy.save_weights()
-                    tf.keras.backend.clear_session()
 
     def interact(self):
         self.log(f"Interacting with the environment")

@@ -14,17 +14,19 @@ config = neat.Config(
     config_path,
 )
 
-wandb.init(
-    project="spot-neat",
-    config=dict(),
-    reinit=True
-)
-
 
 def evaluate_genomes(genomes, config):
     for genome_id, genome in genomes:
         neural_network = neat.nn.FeedForwardNetwork.create(genome, config)
 
+        wandb.init(
+            project="spot-neat-2",
+            config=dict(
+                genome_id=genome_id,
+                config=str(config)
+            ),
+            reinit=True
+        )
         # Ensure SpotEnvironment is initialized correctly
         spot_env = SpotEnvironment(steps_per_episode=10000, goal_distance=10)
 
@@ -39,7 +41,7 @@ def evaluate_genomes(genomes, config):
         agent.train()
 
         # Consider using a more meaningful fitness calculation
-        genome.fitness = agent.get_final_fitness()
+        genome.fitness = agent.get_total_reward()
 
 
 def run_neat():
