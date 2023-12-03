@@ -29,7 +29,7 @@ def evaluate_genomes(genomes, config):
         neural_network = neat.nn.FeedForwardNetwork.create(genome, config)
 
         wandb.init(
-            project="spot-neat-4",
+            project="spot-neat-1000x1000 generations",
             config=dict(
                 genome_id=genome_id,
                 config=str(config)
