@@ -1,8 +1,11 @@
 import neat
 import wandb
-
+import pickle
+import platform
+import os
 from environment_neat import SpotEnvironment
 from agent_neat import Agent
+from datetime import datetime
 
 
 config_path = "./neat-config.txt"
@@ -13,6 +16,12 @@ config = neat.Config(
     neat.DefaultStagnation,
     config_path,
 )
+op_sys = platform.system()
+timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+current_date = datetime.now().strftime("%Y-%b-%d-%H-%M")
+
+logs_dir = f'./neat-models/{op_sys}/{current_date}'
+os.makedirs(logs_dir, exist_ok=True)
 
 
 def evaluate_genomes(genomes, config):
@@ -20,7 +29,7 @@ def evaluate_genomes(genomes, config):
         neural_network = neat.nn.FeedForwardNetwork.create(genome, config)
 
         wandb.init(
-            project="spot-neat-2",
+            project="spot-neat-4",
             config=dict(
                 genome_id=genome_id,
                 config=str(config)
@@ -50,12 +59,14 @@ def run_neat():
     reporter = neat.StdOutReporter(show_species_detail=True)
     population.add_reporter(reporter)
     population.add_reporter(neat.StatisticsReporter())
+    population.add_reporter(neat.Checkpointer(
+        generation_interval=1,
+        time_interval_seconds=1800,  #  30 minutes
+        filename_prefix=f'{logs_dir}/')
+    )
 
     # Run NEAT evolution
-    winner = population.run(evaluate_genomes, 100)
-    best_genome = winner
-    print('\nBest genome:\n{!s}'.format(winner))
-
+    best_genome = population.run(evaluate_genomes, 1000)
     # Create a neural network based on the best genome
     best_neural_network = neat.nn.FeedForwardNetwork.create(
         best_genome, config)

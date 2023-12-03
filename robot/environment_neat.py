@@ -135,8 +135,6 @@ class SpotEnvironment(environment.SpotEnvironment):
         return observation, reward, done, info
 
     def reshape(self, raw_action):
-        print(f"RAW ACTION: {raw_action}")
-
         expanded_action = np.array([
             0, *raw_action[0:2],
             0, *raw_action[2:4],
@@ -148,15 +146,10 @@ class SpotEnvironment(environment.SpotEnvironment):
         return action
 
     def rescale_action(self, raw_action):
-        print(f"RAW ACTION: {raw_action}")
         low_bound = np.array([0, -0.686, -2.3]*4)
         # high_bound = np.array([0, 4.501, -0.888]*4)
         # new range of motion to prevent unnatural movement
         high_bound = np.array([0, 1.3, -1.3]*4)
-
         action_range = high_bound - low_bound
-        print(f"ACTION RANGE: {action_range}")
-
         rescaled_action = low_bound + ((raw_action + 1.0) * 0.5) * action_range
-
         return rescaled_action
