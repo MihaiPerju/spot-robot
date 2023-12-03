@@ -83,10 +83,6 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         self.n_steps += 1
 
-        for i in range(8):
-            a = raw_action[i]
-            wandb.log({f"Action {i+1}": a})
-
         # rms = np.sqrt(np.mean((self.last_action-raw_action)**2))
         self.last_action = raw_action
         # wandb.log({"RMS": rms})
@@ -109,10 +105,10 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         z_axis_rotation = self.get_z_axis_rotation()
 
-        # distance_progress = reached_distance-self.distance_reached_prev
-        # wandb.log({"Distance progress": distance_progress})
+        distance_progress = reached_distance-self.distance_reached_prev
+        wandb.log({"Distance progress": distance_progress})
 
-        reward = -1
+        reward = distance_progress
 
         if reached_distance > self.distance_reached_prev:
             reward = reached_distance

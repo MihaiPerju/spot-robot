@@ -1,9 +1,8 @@
 import random
+import numpy as np
 from collections import deque
 import tensorflow as tf
 from collections import namedtuple
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import wandb
 import os
 
@@ -43,7 +42,6 @@ class Agent():
         self.n_steps = 0
         self.total_steps = 0
         self.max_reward = -1
-        self.reward_total = 0
         self.episode = 1
 
     def log(self, message):
@@ -66,13 +64,12 @@ class Agent():
 
         return {"observations": observations, "actions": actions, "rewards": rewards, "next_observations": next_observations, "dones": dones}
 
-    def get_total_reward(self):
-        return self.reward_total
+    def get_avg_reward(self):
+        return np.mean(self.rewards)
 
     def train(self):
         for episode in range(self.n_episodes):
             self.episode = episode
-            wandb.log({"Episode": episode})
 
             obs = self.env.reset()
             done = False
@@ -82,7 +79,8 @@ class Agent():
 
                 action = self.policy.activate(obs)
                 next_obs, reward, done, _ = self.env.step(action)
-                self.reward_total += reward
+                self.rewards.append(reward)
+                wandb.log({"Average reward": self.get_avg_reward()})
 
                 if reward > self.max_reward:
                     self.max_reward = reward

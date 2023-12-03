@@ -29,10 +29,10 @@ def evaluate_genomes(genomes, config):
         neural_network = neat.nn.FeedForwardNetwork.create(genome, config)
 
         wandb.init(
-            project="spot-neat-1024x1000 generations (2)",
+            project="3-dec",
             config=dict(
                 genome_id=genome_id,
-                config=str(config)
+                config=str(config.genome_config)
             ),
             reinit=True
         )
@@ -50,7 +50,7 @@ def evaluate_genomes(genomes, config):
         agent.train()
 
         # Consider using a more meaningful fitness calculation
-        genome.fitness = agent.get_total_reward()
+        genome.fitness = agent.get_avg_reward()
 
 
 def run_neat():
