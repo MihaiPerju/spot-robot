@@ -50,7 +50,7 @@ def evaluate_genomes(genomes, config):
         agent.train()
 
         # Consider using a more meaningful fitness calculation
-        genome.fitness = agent.get_avg_reward()
+        genome.fitness = agent.get_reward()
 
 def run_neat():
 
