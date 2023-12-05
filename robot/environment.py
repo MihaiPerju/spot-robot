@@ -70,8 +70,7 @@ class SpotEnvironment(gym.Env):
         self.should_render = should_render
         self.goal_distance = goal_distance
         self.max_distance = -1
-        self.max_reward = -1
-        self.distance_reached_prev = -1
+        self.distance_reached_prev = 0
 
         self.n_steps = 0
         self.steps_per_episode = steps_per_episode

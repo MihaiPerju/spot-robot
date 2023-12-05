@@ -37,7 +37,6 @@ class Agent():
 
         self.experience_replay = deque(maxlen=experience_replay_size)
         self.batch_size = batch_size
-        self.rewards = deque(maxlen=100)
 
         self.n_steps = 0
         self.total_steps = 0
@@ -64,8 +63,8 @@ class Agent():
 
         return {"observations": observations, "actions": actions, "rewards": rewards, "next_observations": next_observations, "dones": dones}
 
-    def get_avg_reward(self):
-        return np.mean(self.rewards)
+    def get_reward(self):
+        return self.env.max_distance
 
     def train(self):
         for episode in range(self.n_episodes):
@@ -79,15 +78,14 @@ class Agent():
 
                 action = self.policy.activate(obs)
                 next_obs, reward, done, _ = self.env.step(action)
-                self.rewards.append(reward)
-                wandb.log({"Average reward": self.get_avg_reward()})
+                wandb.log({"Average reward": self.get_reward()})
 
                 if reward > self.max_reward:
                     self.max_reward = reward
                     wandb.log({"Max Reward": reward})
 
                 wandb.log({"Reward": reward})
-                experience = Experience(obs, action, reward, next_obs, done)
+                # experience = Experience(obs, action, reward, next_obs, done)
                 obs = next_obs
 
     def interact(self):

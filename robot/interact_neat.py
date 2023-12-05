@@ -35,7 +35,7 @@ def evaluate_genomes(genomes, config):
             reinit=True
         )
         # Ensure SpotEnvironment is initialized correctly
-        spot_env = SpotEnvironment(steps_per_episode=10000, goal_distance=10)
+        spot_env = SpotEnvironment(steps_per_episode=1000, goal_distance=10)
 
         agent = Agent(
             env=spot_env,
@@ -48,7 +48,7 @@ def evaluate_genomes(genomes, config):
         agent.train()
 
         # Consider using a more meaningful fitness calculation
-        genome.fitness = agent.get_total_reward()
+        genome.fitness = agent.get_avg_reward()
 
 
 def interact():
@@ -58,7 +58,7 @@ def interact():
         time_interval_seconds=1800,  #  30 minutes
         filename_prefix=f'{logs_dir}/')
 
-    checkpoint_path = "./neat-models/Darwin/2023-Dec-03-10:50/22"
+    checkpoint_path = "./neat-models/Darwin/2023-Dec-03-19:13/112"
     population = checkpointer.restore_checkpoint(checkpoint_path)
     best_genome = population.run(evaluate_genomes, 1)   
 

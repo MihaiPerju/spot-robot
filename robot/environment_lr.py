@@ -83,10 +83,6 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         self.n_steps += 1
 
-        for i in range(8):
-            a = raw_action[i]
-            wandb.log({f"Action {i+1}": a})
-
         # rms = np.sqrt(np.mean((self.last_action-raw_action)**2))
         self.last_action = raw_action
         # wandb.log({"RMS": rms})

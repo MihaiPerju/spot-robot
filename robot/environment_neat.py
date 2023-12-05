@@ -108,11 +108,7 @@ class SpotEnvironment(environment.SpotEnvironment):
         distance_progress = reached_distance-self.distance_reached_prev
         wandb.log({"Distance progress": distance_progress})
 
-        reward = distance_progress
-
-        if reached_distance > self.distance_reached_prev:
-            reward = reached_distance
-
+        reward = reached_distance
         self.distance_reached_prev = reached_distance
 
         if reached_distance > self.max_distance:
@@ -121,7 +117,6 @@ class SpotEnvironment(environment.SpotEnvironment):
 
         if z_axis_rotation < 0:
             done = True
-            reward = -1
             self.distance_reached_prev = 0
             self.n_steps = 0
 
