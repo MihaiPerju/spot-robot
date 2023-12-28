@@ -59,7 +59,7 @@ def run_neat():
         time_interval_seconds=1800,  #  30 minutes
         filename_prefix=f'{logs_dir}/')
 
-    checkpoint_path = "./neat-models/Darwin/2023-Dec-03-19:13/112"
+    checkpoint_path = "./neat-models/Darwin/2023-Dec-09-17:48/951"
     population = checkpointer.restore_checkpoint(checkpoint_path)
 
     reporter = neat.StdOutReporter(show_species_detail=True)

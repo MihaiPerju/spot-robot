@@ -15,3 +15,5 @@ robot/MUJOCO_LOG.TXT
 spot/**
 records/**
 resources/**
+
+robot/neat-models/**
