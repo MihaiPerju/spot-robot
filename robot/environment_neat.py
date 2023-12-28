@@ -101,6 +101,8 @@ class SpotEnvironment(environment.SpotEnvironment):
             self.n_steps = 0
 
         reached_distance = self.data.body("trunk").xpos[0]
+        distance_to_goal = self.goal_distance - reached_distance
+
         wandb.log({"Reached distance": reached_distance})
 
         z_axis_rotation = self.get_z_axis_rotation()
@@ -108,7 +110,7 @@ class SpotEnvironment(environment.SpotEnvironment):
         distance_progress = reached_distance-self.distance_reached_prev
         wandb.log({"Distance progress": distance_progress})
 
-        reward = reached_distance
+        reward = -distance_to_goal
         self.distance_reached_prev = reached_distance
 
         if reached_distance > self.max_distance:

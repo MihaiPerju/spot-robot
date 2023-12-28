@@ -29,7 +29,7 @@ def evaluate_genomes(genomes, config):
         neural_network = neat.nn.FeedForwardNetwork.create(genome, config)
 
         wandb.init(
-            project="6-dec-1024",
+            project="28-dec-1024",
             config=dict(
                 genome_id=genome_id,
                 config=str(config.genome_config)
@@ -59,7 +59,7 @@ def run_neat():
         time_interval_seconds=1800,  #  30 minutes
         filename_prefix=f'{logs_dir}/')
 
-    checkpoint_path = "./neat-models/Darwin/2023-Dec-09-17:48/951"
+    checkpoint_path = "./neat-models/Darwin/2023-Dec-10-18:53/1079"
     population = checkpointer.restore_checkpoint(checkpoint_path)
 
     reporter = neat.StdOutReporter(show_species_detail=True)
